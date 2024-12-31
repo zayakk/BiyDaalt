@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-&*9wp6*j8auiv(*5$ncdygy(3#a)-o1c48da_933l6d2aer5^a
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*', 'localhost']
 
 
 # Application definition
@@ -55,8 +55,13 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',  # add this line if it's not already present
 ]
 
+CORS_ALLOW_ALL_ORIGINS = True
+
+
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3000',  # Allow requests from localhost:3000
+    'http://localhost:3000',  
+    'http://localhost:8000',  
+    # CORS_ALLOW_ALL_ORIGINS = True# Allow requests from localhost:3000
 ]
 
 ROOT_URLCONF = 'backend.urls'
@@ -209,10 +214,11 @@ def connectDB():
         dbname='postgres',
         user='userlesson',
         password='123',
+        # port='5432'
         port='5938'
     )
     return conn
-# connectDB
+# connectDB gaigui bolchih shig bolloo te? aanha byrla dehde bi ug n baraa burtgelin service biced fronto hiicn ghde orj irehgu bna te
 
 # DB disconnect hiij baina
 def disconnectDB(conn):

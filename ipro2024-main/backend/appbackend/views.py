@@ -135,14 +135,18 @@ def dt_login(request):
         else: # if user name or password wrong 
             data = [{'uname':uname}] # he/she wrong username, password. just return username
             resp = sendResponse(request, 1004, data, action) # response beldej baina. 6 keytei.
-    except:
+    except Exception as e:
+        print(str(e))
         # login service deer aldaa garval ajillana. 
         action = jsons["action"]
         respdata = [] # hooson data bustaana.
         resp = sendResponse(request, 5001, respdata, action) # standartiin daguu 6 key-tei response butsaana
         
     finally:
-        disconnectDB(myConn) # yamarch uyd database holbolt uussen bol holboltiig salgana. Uchir ni finally dotor baigaa
+        try:
+            disconnectDB(myConn) # yamarch uyd database holbolt uussen bol holboltiig salgana. Uchir ni finally dotor baigaa
+        except Exception as e:
+            print(str(e))
         return resp # response bustaaj baina
 #dt_login
 
@@ -180,6 +184,7 @@ def dt_register(request):
     #     "curdate": "2024/11/06 07:59:23"
     # }
     try :
+        print(jsons)
         uname = jsons["uname"].lower() # get uname key from jsons and lower
         lname = jsons["lname"].capitalize() # get lname key from jsons and capitalize
         fname = jsons["fname"].capitalize() # get fname key from jsons and capitalize
@@ -241,6 +246,7 @@ def dt_register(request):
             respdata = [{"uname":uname,"fname":fname}]
             resp = sendResponse(request, 3008, respdata, action) # response beldej baina. 6 keytei.
     except (Exception) as e:
+        print(str(e))
         # register service deer aldaa garval ajillana. 
         action = jsons["action"]
         respdata = [{"aldaa":str(e)}] # hooson data bustaana.
@@ -750,24 +756,70 @@ def checkService(request): # hamgiin ehend duudagdah request shalgah service
 
 # appbackend/views.py
 
+
+@csrf_exempt
 def add_product(request):
-    if request.method == 'POST':
+
+# {
+    # "name": "Product Name",
+    # "description": "Short description of the product",
+    # "price": 10000,
+    # "quantity": 10
+# }
+
+    if request.method == 'POST':  # Ensure POST method is used
         try:
+            # Parse the JSON body
             data = json.loads(request.body)
-            product = Product.objects.create(
-                name=data.get('name'),
-                description=data.get('description'),
-                price=data.get('price'),
-                quantity=data.get('quantity')
-            )
-            return JsonResponse({"message": "Product added successfully"}, status=201)
-        except Exception as e:
-            return JsonResponse({"error": str(e)}, status=500)
-    else:
-        return JsonResponse({"error": "Invalid request method."}, status=405)
+            
+            # Extract fields from the JSON
+            action = data.get("action")
+            if action == "add_products":
+                name = data.get("name")
+                description = data.get("description")
+                price = data.get("price")
+                quantity = data.get("quantity")
+                
+                # Add logic to save product to the database
+                # Example:
+                # product = Product.objects.create(
+                #     name=name, description=description, price=price, quantity=quantity
+                # )
+                
+                return JsonResponse({"message": "Product added successfully!"}, status=201)
+            else:
+                return JsonResponse({"error": "Invalid action."}, status=400)
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Invalid JSON format."}, status=400)
+    return JsonResponse({"error": "Invalid request method."}, status=405)
 
-
+@csrf_exempt
 def get_products(request):
+# {
+#     "resultCode": 200,
+#     "resultMessage": "Success",
+#     "data": [
+#         {
+#             "id": 1,
+#             "name": "baraa1",
+#             "description": "product 1",
+#             "price": 10000,
+#             "quantity": 10
+#         },
+#         {
+#             "id": 2,
+#             "name": "baraa2",
+#             "description": " product 2",
+#             "price": 20000,
+#             "quantity": 5
+#         }
+#     ],
+#     "size": 2,
+#     "action": "get_products",
+#     "curdate": "2025-01-01 12:00:00"
+# }
+
+
     # Assume we are dealing with a POST request similar to the structure in dt_forgot
     try:
         # Get all products
@@ -789,14 +841,13 @@ def get_products(request):
 @csrf_exempt
 def update_product(request, product_id):
 
-    # {
-#     "resultCode": 200,
-#     "resultMessage": "Success",
-#     "data": [{"message": "Product updated successfully."}],
-#     "size": 1,
-#     "action": "update_product",
-#     "curdate": "2024/11/06 08:00:32"
+#     #{
+#     "name": "Updated Product Name",
+#     "description": "Updated description of the product",
+#     "price": 15000,
+#     "quantity": 20
 # }
+
 
     if request.method == 'PUT':
         try:
@@ -839,6 +890,19 @@ def update_product(request, product_id):
 
 @csrf_exempt
 def delete_product(request, product_id):
+#     {
+#     "resultCode": 200,
+#     "resultMessage": "Success",
+#     "data": [
+#         {
+#             "message": "Product deleted successfully."
+#         }
+#     ],
+#     "size": 1,
+#     "action": "delete_product",
+#     "curdate": "2025-01-01 12:10:00"
+# }
+
     if request.method == 'DELETE':
         try:
             product = Product.objects.get(pk=product_id)  # Retrieve product by ID
