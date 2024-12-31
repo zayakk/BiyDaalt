@@ -16,3 +16,18 @@ export default {
   },
   plugins: [],
 } satisfies Config;
+// module.exports = {
+//   content: ["./pages/**/*.{js,ts,jsx,tsx}", "./components/**/*.{js,ts,jsx,tsx}"],
+//   theme: {
+//     extend: {
+//       colors: {
+//         customPink: {
+//           light: '#FDE7F3',
+//           DEFAULT: '#F472B6',
+//           dark: '#BE185D',
+//         },
+//       },
+//     },
+//   },
+//   plugins: [],
+// };

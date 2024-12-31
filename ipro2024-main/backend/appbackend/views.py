@@ -247,8 +247,11 @@ def dt_register(request):
         resp = sendResponse(request, 5002, respdata, action) # standartiin daguu 6 key-tei response butsaana
         
     finally:
-        disconnectDB(conn) # yamarch uyd database holbolt uussen bol holboltiig salgana. Uchir ni finally dotor baigaa
-        return resp # response bustaaj baina
+        try:
+            disconnectDB(conn)  # Try to disconnect only if conn was set
+        except UnboundLocalError:
+            pass  # If conn was not set, ignore the error
+        return resp
 # dt_register
 
 # Nuuts ugee martsan bol duudah service

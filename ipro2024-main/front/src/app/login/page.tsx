@@ -65,7 +65,7 @@ export default function Login() {
       }
     } catch (err) {
       console.error(err);
-      setError("An error occurred. Please try again.");
+      setError("Алдаа гарлаа. Дахин оролдоно уу.");
     } finally {
       setLoading(false);
     }

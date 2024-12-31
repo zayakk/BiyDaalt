@@ -205,7 +205,7 @@ APPEND_SLASH = False
 def connectDB():
     conn = psycopg2.connect (
         # host = 'localhost', #server host
-        host='192.168.0.15',
+        host='59.153.86.254',
         dbname='postgres',
         user='userlesson',
         password='123',
